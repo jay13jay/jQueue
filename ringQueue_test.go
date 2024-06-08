@@ -47,7 +47,7 @@ func TestRingQueuePerformance(t *testing.T) {
 }
 
 func BenchmarkRingQueue(b *testing.B) {
-    initialSize := 1000
+    initialSize := 10
 
     b.Run("Enqueue", func(b *testing.B) {
         rq := NewRingQueue(initialSize, true)
@@ -69,7 +69,7 @@ func BenchmarkRingQueue(b *testing.B) {
     b.Run("ResizeQueue", func(b *testing.B) {
         rq := NewRingQueue(initialSize, true)
         for i := 0; i < b.N; i++ {
-            rq.ResizeQueue(1.5)
+            rq.ResizeQueue(1.25)
         }
     })
 

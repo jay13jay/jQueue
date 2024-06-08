@@ -1,20 +1,20 @@
 package jqueue
 
 // Create new ring queue.
-// accepts cap and resize as params
-// cap is an int, the size of the queue
-// resize is a flag, if true the queue will
-// resize when enqueing while full.
+// accepts cap and Resize as params
+// cap is an int, the Size of the queue
+// Resize is a flag, if true the queue will
+// Resize when enqueing while full.
 // if false, the queue will overwrite elements
 // in a circular fashion.
 func NewRingQueue(cap int, allowResize bool) *ringQueue {
 	return &ringQueue{
-		data: make([]interface{}, cap),
-		start: 0,
-		end: 0,
-		size: cap,
-		isFull: false,
-		resize: allowResize,
+		Data: make([]interface{}, cap),
+		Start: 0,
+		End: 0,
+		Size: cap,
+		IsFull: false,
+		Resize: allowResize,
 	}
 }
 
@@ -28,68 +28,75 @@ func min(a, b int) int {
     return b
 }
 
-// resize the queue takes 1 argument, m
-// which is the multiple to increase the size by
+// Resize the queue takes 1 argument, m
+// which is the multiple to increase the Size by
 func (q *ringQueue) ResizeQueue(factor float64) {
-    newSize := int(float64(q.size) * factor)
-    newData := make([]interface{}, newSize)
+	if factor < 1 {
+		q.ShrinkQueue(factor)
+		return
+	}
 
-		// Check if size is smaller than 1, if so, shrink the queue
-		if factor < 1 {
-			q.ShrinkQueue(factor)
-		}
+	newSize := int(float64(q.Size) * factor)
+	newData := make([]interface{}, newSize)
 
-    if q.start < q.end {
-        copy(newData, q.data[q.start:q.end])
-    } else {
-        n := copy(newData, q.data[q.start:])
-        copy(newData[n:], q.data[:q.end])
-    }
+	if q.Start < q.End {
+		copy(newData, q.Data[q.Start:q.End])
+	} else {
+		n := copy(newData, q.Data[q.Start:])
+		copy(newData[n:], q.Data[:q.End])
+	}
 
-    q.start = 0
-    q.end = q.size
-    q.size = newSize
-    q.data = newData
-    q.isFull = false
+	numElements := q.Size
+	if q.Start <= q.End {
+		numElements = q.End - q.Start
+	} else {
+		numElements = q.Size - q.Start + q.End
+	}
+
+	q.Data = newData
+	q.Start = 0
+	q.End = numElements % newSize
+	q.Size = newSize
+	q.IsFull = (numElements == newSize)
 }
 
 // Shrink the queue by a factor of 'factor'.
 // If factor is >= 1, the queue is not shrunk.
 // If factor is < 1, the queue is shrunk by that factor.
-// For example, if factor is 0.75, the queue will be shrunk to 75% of its current size.
+// For example, if factor is 0.75, the queue will be shrunk to 75% of its current Size.
 func (q *ringQueue) ShrinkQueue(factor float64) {
-    if factor >= 1 {
-        return // Factor should be less than 1 to shrink the queue
-    }
+	if factor >= 1 {
+		return // Factor should be less than 1 to shrink the queue
+	}
 
-    newSize := int(float64(q.size) * factor)
-    if newSize < 1 {
-        newSize = 1 // Ensure the new size is at least 1
-    }
+	newSize := int(float64(q.Size) * factor)
+	if newSize < 1 {
+		newSize = 1 // Ensure the new Size is at least 1
+	}
 
-    // Only shrink if the new size is less than the number of elements in the queue
-    numElements := q.size
-    if q.start < q.end {
-        numElements = q.end - q.start
-    } else if q.start > q.end {
-        numElements = q.size - q.start + q.end
-    }
+	numElements := q.Size
+	if q.Start < q.End {
+		numElements = q.End - q.Start
+	} else if q.Start > q.End {
+		numElements = q.Size - q.Start + q.End
+	}
 
-    if newSize < numElements {
-        newSize = numElements
-    }
+	if newSize < numElements {
+		newSize = numElements
+	}
 
-    newData := make([]interface{}, newSize)
+	newData := make([]interface{}, newSize)
 
-    if q.start < q.end {
-        copy(newData, q.data[q.start:q.end])
-    } else {
-        n := copy(newData, q.data[q.start:])
-        copy(newData[n:], q.data[:q.end])
-    }
+	if q.Start < q.End {
+		copy(newData, q.Data[q.Start:q.End])
+	} else {
+		n := copy(newData, q.Data[q.Start:])
+		copy(newData[n:], q.Data[:q.End])
+	}
 
-    q.start = 0
-    q.end = numElements
-    q.size = newSize
-    q.data = newData
+	q.Data = newData
+	q.Start = 0
+	q.End = numElements
+	q.Size = newSize
+	q.IsFull = false
 }
