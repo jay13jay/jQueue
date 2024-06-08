@@ -30,6 +30,9 @@ q.ResizeQueue(2)
 // note: this is the default behavior
 q.ResizeQueue(1.25)
 
+// shrinks the queue to 75% of current size
+q.ResizeQueue(0.75)
+
 // resize before enqueue
 if q.isFull {
   q.Resize(2)
