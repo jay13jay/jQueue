@@ -1,5 +1,7 @@
 package jqueue
 
+import "fmt"
+
 // Create new ring queue.
 // accepts cap and Resize as params
 // cap is an int, the Size of the queue
@@ -37,6 +39,10 @@ func (q *ringQueue) ResizeQueue(factor float64) {
 	}
 
 	newSize := int(float64(q.Size) * factor)
+	if newSize - q.Size < 2 {
+		newSize = q.Size + 2 // Ensure the new Size is at least 2 greater than the old Size
+	}
+	fmt.Printf("Resizing queue to %d\n", newSize)
 	newData := make([]interface{}, newSize)
 
 	if q.Start < q.End {
@@ -46,7 +52,7 @@ func (q *ringQueue) ResizeQueue(factor float64) {
 		copy(newData[n:], q.Data[:q.End])
 	}
 
-	numElements := q.Size
+	var numElements int
 	if q.Start <= q.End {
 		numElements = q.End - q.Start
 	} else {

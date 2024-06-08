@@ -8,7 +8,7 @@ import (
 )
 
 func TestRingQueuePerformance(t *testing.T) {
-    initialSize := 100
+    initialSize := 1
     iterations := 10
 
     rq := NewRingQueue(initialSize, true)

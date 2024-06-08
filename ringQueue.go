@@ -14,7 +14,7 @@ type ringQueue struct {
 func (q *ringQueue) Enqueue(v interface{}) {
     if q.IsFull {
         if q.Resize {
-            q.ResizeQueue(1.25)
+            q.ResizeQueue(1.5)
         } else {
             // Overwrite the oldest element
             q.Start = (q.Start + 1) % q.Size
