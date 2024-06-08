@@ -44,21 +44,6 @@ func (q *ringQueue) Dequeue() (interface{}, bool) {
     return value, true
 }
 
-func (q *ringQueue) Print() {
-    fmt.Print("Queue elements: ")
-    if q.isFull {
-        fmt.Print(q.data[q.start])
-        for i := (q.start + 1) % q.size; i != q.end; i = (i + 1) % q.size {
-            fmt.Printf(" %v", q.data[i])
-        }
-    } else {
-        for i := q.start; i != q.end; i = (i + 1) % q.size {
-            fmt.Printf(" %v", q.data[i])
-        }
-    }
-    fmt.Println()
-}
-
 // accepts an int argument, pops that amount from the queue
 // returns a list with popped elements
 // if requested amount is > items in queue, returns all items
@@ -82,4 +67,21 @@ func (q *ringQueue) DequeueAmount(amount int) []interface{} {
     }
 
     return dequeued
+}
+
+// Print all elements in the queue
+// does not pop any elements
+func (q *ringQueue) Print() {
+    fmt.Print("Queue elements: ")
+    if q.isFull {
+        fmt.Print(q.data[q.start])
+        for i := (q.start + 1) % q.size; i != q.end; i = (i + 1) % q.size {
+            fmt.Printf(" %v", q.data[i])
+        }
+    } else {
+        for i := q.start; i != q.end; i = (i + 1) % q.size {
+            fmt.Printf(" %v", q.data[i])
+        }
+    }
+    fmt.Println()
 }

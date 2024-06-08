@@ -27,9 +27,22 @@ Ex:
 q.ResizeQueue(2)
 
 // grows queue by 25%
+// note: this is the default behavior
 q.ResizeQueue(1.25)
+
+// resize before enqueue
+if q.isFull {
+  q.Resize(2)
+  q.Enqueue(data)
+}
 ```
-Note: Queue capacity is always an int value, so value of resize will round down to nearest whole number
+*Note: Queue capacity is always an int value, so value of capacity will round down to nearest whole number*
 
+## Get element(s)
+```go
+// pop a single element
+element := q.Dequeue()
 
-
+// pop 5 elements
+elements := q.DequeueAmount(5)
+```
