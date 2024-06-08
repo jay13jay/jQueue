@@ -32,22 +32,24 @@ func (q *ringQueue) Enqueue(v interface{}) {
 }
 
 
-// takes 1 int argument, amount, and returns a list
-// containing that many elements, popping them from the queue
+// Pops 1 item from the queue, returns the value
+// and a bool indicating if the queue is empty.
+// true indicates an empty queue
 func (q *ringQueue) Dequeue() (interface{}, bool) {
     if q.start == q.end && !q.isFull {
-        return nil, false // Queue is empty
+        return nil, true // Queue is empty
     }
     value := q.data[q.start]
     q.start = (q.start + 1) % q.size
     q.isFull = false
-    return value, true
+    return value, false
 }
 
-// accepts an int argument, pops that amount from the queue
-// returns a list with popped elements
-// if requested amount is > items in queue, returns all items
-func (q *ringQueue) DequeueAmount(amount int) []interface{} {
+// Accepts an int argument, pops that amount from the queue.
+// Returns a list with popped elements and a bool indicating
+// if the queue is empty. True indicates empty queue.
+// If requested amount is > items in queue, returns all items
+func (q *ringQueue) DequeueAmount(amount int) ([]interface{}, bool) {
     var dequeued []interface{}
 
     // Determine the actual number of elements to dequeue
@@ -65,12 +67,15 @@ func (q *ringQueue) DequeueAmount(amount int) []interface{} {
         q.start = (q.start + 1) % q.size
         q.isFull = false
     }
+		if q.start == q.end && !q.isFull {
+        return dequeued, true // Queue is empty
+    }
 
-    return dequeued
+    return dequeued, false
 }
 
-// Print all elements in the queue
-// does not pop any elements
+// Print all elements in the queue.
+// Does not pop any elements
 func (q *ringQueue) Print() {
     fmt.Print("Queue elements: ")
     if q.isFull {

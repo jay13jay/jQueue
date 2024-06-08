@@ -41,8 +41,33 @@ if q.isFull {
 ## Get element(s)
 ```go
 // pop a single element
-element := q.Dequeue()
+element, isEmpty := q.Dequeue()
 
 // pop 5 elements
-elements := q.DequeueAmount(5)
+elements, isEmpty := q.DequeueAmount(5)
+```
+
+## Example implementation
+```go
+func main() {
+    rq := jqueue.NewRingQueue(5, true)
+
+    rq.Enqueue(1)
+    rq.Enqueue(2)
+    rq.Enqueue(3)
+    rq.Enqueue(4)
+    rq.Enqueue(5)
+
+    dequeued, empty := rq.DequeueAmount(3)
+    fmt.Println("Dequeued:", dequeued, "Empty:", empty) // Output: Dequeued: [1 2 3] Empty: false
+
+    rq.Enqueue(6)
+    dequeued, isEmpty = rq.DequeueAmount(4)
+    fmt.Println("Dequeued:", dequeued, "Empty:", empty) // Output: Dequeued: [4 5 6] Empty: true
+
+    dequeued, isEmpty = rq.DequeueAmount(5)
+    fmt.Println("Dequeued:", dequeued, "Empty:", empty) // Output: Dequeued: [] Empty: true
+
+    rq.Print() // Output: Queue elements: Queue is empty
+}
 ```
