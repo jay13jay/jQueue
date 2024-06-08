@@ -1,5 +1,5 @@
 # jqueue
-golang queue implementation
+golang resizable queue implementation
 
 # Usage
 

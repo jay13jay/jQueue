@@ -12,7 +12,7 @@ func NewRingQueue(cap int, allowResize bool) *ringQueue {
 		data: make([]interface{}, cap),
 		start: 0,
 		end: 0,
-		size: 0,
+		size: cap,
 		isFull: false,
 		resize: allowResize,
 	}
