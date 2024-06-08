@@ -63,7 +63,7 @@ func (q *ringQueue) DequeueAmount(amount int) ([]interface{}, bool) {
     }
 
     for i := 0; i < numElements; i++ {
-        dequeued = appEnd(dequeued, q.Data[q.Start])
+        dequeued = append(dequeued, q.Data[q.Start])
         q.Start = (q.Start + 1) % q.Size
         q.IsFull = false
     }
