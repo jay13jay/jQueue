@@ -7,22 +7,22 @@ package jqueue
 // resize when enqueing while full.
 // if false, the queue will overwrite elements
 // in a circular fashion.
-func NewRingQueue(cap int, resize bool) *ringQueue {
+func NewRingQueue(cap int, allowResize bool) *ringQueue {
 	return &ringQueue{
 		data: make([]interface{}, cap),
 		start: 0,
 		end: 0,
 		size: 0,
 		isFull: false,
-		resize: resize,
+		resize: allowResize,
 	}
 }
 
 // resize the queue takes 1 argument, m
 // which is the multiple to increase the size by
-func (q *ringQueue) ResizeQueue(m float64) {
-    newCapacity := cap(q.data) * m
-    newData := make([]interface{}, newCapacity)
+func (q *ringQueue) ResizeQueue(factor float64) {
+    newSize := int(float64(q.size) * factor)
+    newData := make([]interface{}, newSize)
 
     if q.start < q.end {
         copy(newData, q.data[q.start:q.end])
@@ -32,8 +32,8 @@ func (q *ringQueue) ResizeQueue(m float64) {
     }
 
     q.start = 0
-    q.end = len(q.data)
+    q.end = q.size
+    q.size = newSize
     q.data = newData
     q.isFull = false
-		q.resize = true
 }

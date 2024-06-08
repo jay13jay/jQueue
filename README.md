@@ -18,7 +18,8 @@ q = NewRingQueue(20, false)
 
 ## Resize a queue
 The queue will automatically resize when trying to enque if the queue is full. 
-The resize function takes 1 argument, m, which is the multiple to expand the queue by.
+The resize function takes 1 argument, factor, which is the factor to expand the queue by.
+If you attempt to Enqueue when the queue is full, the automatic resize will grow the queue by 1.25, or 25%
 
 Ex:
 ```go
